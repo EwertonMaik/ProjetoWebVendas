@@ -29,6 +29,7 @@ namespace VendasWebMVC.Services
         //Método para cadastrar Vendedor
         public void Insert(Seller obj)
         {
+            obj.Department = _context.Department.First();
             _context.Add(obj);
             _context.SaveChanges();
         }
