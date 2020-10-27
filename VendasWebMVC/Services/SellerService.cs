@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using VendasWebMVC.Data;
 using VendasWebMVC.Models;
 using Microsoft.EntityFrameworkCore;
+using VendasWebMVC.Services.Exception;
 
 namespace VendasWebMVC.Services
 {
@@ -48,6 +49,24 @@ namespace VendasWebMVC.Services
             var obj = _context.Seller.Find(id);
             _context.Seller.Remove(obj);
             _context.SaveChanges();
+        }
+
+        //Método para Atualizar Vendedor - Seller
+        public void Update(Seller obj)
+        {
+            if ( !_context.Seller.Any(x => x.Id == obj.Id) )//Verificando se não Objeto Existe no Banco de Dados
+            {
+                throw new NotFoundException("Id não Encontrado!");
+            }
+            try
+            {
+                _context.Seller.Update(obj);
+                _context.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException dbe)
+            {
+                throw new DbConcurrencyException(dbe.Message);
+            }
         }
     }
 }
