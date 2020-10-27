@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using VendasWebMVC.Data;
+using VendasWebMVC.Services;
 
 namespace VendasWebMVC
 {
@@ -41,6 +42,7 @@ namespace VendasWebMVC
                     builder => builder.MigrationsAssembly("VendasWebMVC")));
 
             services.AddScoped<SeedingService>();
+            services.AddScoped<SellerService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
