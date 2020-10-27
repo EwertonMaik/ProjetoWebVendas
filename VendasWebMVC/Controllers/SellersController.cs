@@ -43,5 +43,28 @@ namespace VendasWebMVC.Controllers
             _sellerService.Insert(seller);
             return RedirectToAction(nameof(Index));
         }
+
+        //Método para Excluir Vendedor
+        public IActionResult Delete(int? id)
+        {
+            if (id == null) //Verifica se id recebido no parâmetro é null
+            {
+                return NotFound();
+            }
+            var obj = _sellerService.FindById(id.Value);
+            if (obj == null)//Verifica se o valor buscado no banco retornou null
+            {
+                return NotFound();
+            }
+            return View(obj);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            _sellerService.Remove(id);
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
