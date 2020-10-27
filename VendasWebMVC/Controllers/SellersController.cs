@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -50,12 +51,12 @@ namespace VendasWebMVC.Controllers
         {
             if (id == null) //Verifica se id recebido no parâmetro é null
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não Fornecido!" } );
             }
             var obj = _sellerService.FindById(id.Value);
             if (obj == null)//Verifica se o valor buscado no banco retornou null
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não Encontrado!" });
             }
             return View(obj);
         }
@@ -73,12 +74,12 @@ namespace VendasWebMVC.Controllers
         {
             if (id == null) //Verifica se id recebido no parâmetro é null
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não Fornecido!" });
             }
             var obj = _sellerService.FindById(id.Value);
             if (obj == null)//Verifica se o valor buscado no banco retornou null
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não Encontrado!" });
             }
             return View(obj);
         }
@@ -88,12 +89,12 @@ namespace VendasWebMVC.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não Fornecido!" }); ;
             }
             var obj = _sellerService.FindById(id.Value);
             if (obj == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id não Encontrado!" });
             }
             List<Department> departments = _departmentService.FindAll();
             SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments };
@@ -106,21 +107,28 @@ namespace VendasWebMVC.Controllers
         {
             if (id != seller.Id)
             {
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { message = "Id não Corresponde!" });
             }
             try
             {
                 _sellerService.Update(seller);
                 return RedirectToAction(nameof(Index));
             }
-            catch (NotFoundException)
+            catch (ApplicationException ae)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = ae.Message } );
             }
-            catch (DbConcurrencyException)
+        }
+
+        //Método para retornar Erro
+        public IActionResult Error(string message)
+        {
+            var viewModel = new ErrorViewModel
             {
-                return BadRequest();
-            }
+                Message = message,
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            };
+            return View(viewModel);
         }
     }
 }
