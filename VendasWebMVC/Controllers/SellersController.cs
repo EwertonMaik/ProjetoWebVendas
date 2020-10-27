@@ -66,5 +66,20 @@ namespace VendasWebMVC.Controllers
             _sellerService.Remove(id);
             return RedirectToAction(nameof(Index));
         }
+
+        //Método para exibir detalhes do cadastro do Vendedor
+        public IActionResult Details(int? id)
+        {
+            if (id == null) //Verifica se id recebido no parâmetro é null
+            {
+                return NotFound();
+            }
+            var obj = _sellerService.FindById(id.Value);
+            if (obj == null)//Verifica se o valor buscado no banco retornou null
+            {
+                return NotFound();
+            }
+            return View(obj);
+        }
     }
 }

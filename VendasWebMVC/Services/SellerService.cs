@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VendasWebMVC.Data;
 using VendasWebMVC.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace VendasWebMVC.Services
 {
@@ -36,7 +37,9 @@ namespace VendasWebMVC.Services
         //Método para Buscar Vendendor pelo Id
         public Seller FindById(int id)
         {
-            return _context.Seller.FirstOrDefault(obj => obj.Id == id);
+            //Include faz o join entre Seller e Department / Vendedor e departamento
+            //Chamado de eager Loading
+            return _context.Seller.Include(obj => obj.Department).FirstOrDefault(obj => obj.Id == id);
         }
 
         //Método para Excluír Vendedor
