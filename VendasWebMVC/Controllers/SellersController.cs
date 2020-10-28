@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using VendasWebMVC.Models;
 using VendasWebMVC.Models.ViewModels;
 using VendasWebMVC.Services;
@@ -71,8 +72,15 @@ namespace VendasWebMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            await _sellerService.RemoveAsync(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _sellerService.RemoveAsync(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch(IntegrityException ie)
+            {
+                return RedirectToAction(nameof(Error), new { message = ie.Message } );
+            }
         }
 
         //Método para exibir detalhes do cadastro do Vendedor
