@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VendasWebMVC.Data;
 using VendasWebMVC.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace VendasWebMVC.Services
 {
@@ -21,9 +22,10 @@ namespace VendasWebMVC.Services
         }
 
         //Método para Listar todos Departamentos, ordenando pelo nome
-        public List<Department> FindAll()
+        //Método Atualizado para Assíncrono
+        public async Task<List<Department>> FindAllAsync()
         {
-            return _context.Department.OrderBy(x => x.Name).ToList();
+            return await _context.Department.OrderBy(x => x.Name).ToListAsync();
         }
     }
 }
